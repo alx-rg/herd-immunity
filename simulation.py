@@ -14,7 +14,7 @@ class Simulation(object):
     infected people in a population are all variables that can be set when the program is run.
     '''
 
-    def __init__(self, virus, pop_size, vacc_percentage, initial_infected=1):
+    def __init__(self, virus, pop_size, percent_pop_vaccinated, initial_infected=1):
         ''' Logger object logger records all events during the simulation.
         Population represents all Persons in the population.
         The next_person_id is the next available id for all created Persons,
@@ -38,22 +38,22 @@ class Simulation(object):
         # At the end of each time step, call self._infect_newly_infected()
         # and then reset .newly_infected back to an empty list.
         self.logger = None
-        self.population = [] # List of Person objects
-        self.pop_size = pop_size # Int
+        self.population = self._create_population() # List of Person objects
+        self.pop_size = int(pop_size) # Int
         self.next_person_id = 0 # Int
         self.virus = virus # Virus object
-        self.initial_infected = initial_infected # Int
+        self.initial_infected = int(initial_infected) # Int
         self.total_infected = 0 # Int
         self.current_infected = 0 # Int
-        self.vacc_percentage = vacc_percentage # float between 0 and 1
+        self.percent_pop_vaccinated = float(percent_pop_vaccinated) # float between 0 and 1
         self.total_dead = 0 # Int
-        self.file_name = "{}_simulation_pop_{}_vp_{}_infected_{}.txt".format(
-            virus_name, pop_size, vacc_percentage, initial_infected)
+        self.file_name = f"{virus.name}_simulation_pop_{pop_size}_vp_{percent_pop_vaccinated}_infected_{initial_infected}.txt"
         self.newly_infected = []
 
-    def _create_population(self, initial_infected):
+    def _create_population(self):
         '''This method will create the initial population.
             Args:
+            self.initial_infected
                 initial_infected (int): The number of infected people that the simulation
                 will begin with.
 
@@ -61,6 +61,18 @@ class Simulation(object):
                 list: A list of Person objects.
 
         '''
+        # Make a person for each infected person
+        # LOOP through 0 to initial infected - from 0 to initial infected        
+        # 
+        # initialize an empty array
+        # FOR i in range self.initial infected
+        #   make an  person (as we did in the person class) and instantiate them with a virus
+        #   append the infected person to the population
+        # FOR for i in range self.initial_population - self.initial_infected
+        #   make an uninfected person
+        #   append the people to the list
+        #RETURN
+        
         # TODO: Finish this method!  This method should be called when the simulation
         # begins, to create the population that will be used. This method should return
         # an array filled with Person objects that matches the specifications of the
@@ -153,20 +165,34 @@ class Simulation(object):
 
 
 if __name__ == "__main__":
-    params = sys.argv[1:]
-    virus_name = str(params[0])
-    repro_num = float(params[1])
-    mortality_rate = float(params[2])
+    pop_size = 100
+    percent_pop_vaccinated = 0.15
+    initial_infected = 10
 
-    pop_size = int(params[3])
-    vacc_percentage = float(params[4])
-
-    if len(params) == 6:
-        initial_infected = int(params[5])
-    else:
-        initial_infected = 1
 
     virus = Virus(name, repro_rate, mortality_rate)
-    sim = Simulation(pop_size, vacc_percentage, initial_infected, virus)
+    sim = Simulation(virus, pop_size, percent_pop_vaccinated, initial_infected)
 
     sim.run()
+
+
+# if __name__ == "__main__":
+
+    
+#     params = sys.argv[1:]
+#     virus_name = str(params[0])
+#     repro_num = float(params[1])
+#     mortality_rate = float(params[2])
+
+#     pop_size = int(params[3])
+#     percent_pop_vaccinated = float(params[4])
+
+#     if len(params) == 6:
+#         initial_infected = int(params[5])
+#     else:
+#         initial_infected = 1
+#    # self, name, repro_rate, mortality_rate
+#     virus = Virus(name, repro_rate, mortality_rate)
+#     sim = Simulation(virus, pop_size, percent_pop_vaccinated, initial_infected)
+
+#     sim.run()

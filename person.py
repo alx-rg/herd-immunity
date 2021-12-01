@@ -1,5 +1,5 @@
 import random
-random.seed(42)
+#random.seed(42)
 from virus import Virus
 
 
@@ -17,7 +17,7 @@ class Person(object):
         self._id = _id  # None int
         self.is_alive = True  # boolean
         self.is_vaccinated = is_vaccinated # None boolean
-        self.infection = infection # None  # Virus object or None
+        self.infection = infection # ALREADY NONE BY DEFAULT Virus object or None
     
     def did_survive_infection(self):
         chance_infection = random.random()
@@ -86,6 +86,7 @@ def test_did_survive_infection():
     assert person.infection is virus
     # Resolve whether the Person survives the infection or not
     survived = person.did_survive_infection()
+    print(f'survived? {survived}')
     # Check if the Person survived or not
     if survived:
         assert person.is_alive is True
@@ -97,15 +98,17 @@ def test_did_survive_infection():
     else:
         assert person.is_alive is False
         assert person.is_vaccinated is False
-        assert person.infection is False
         assert person.infection is virus
         # TODO: Write your own assert statements that test
         # the values of each attribute for a Person who did not survive
         # assert ...
         
 
-
 test_vacc_person_instantiation()
 test_not_vacc_person_instantiation()
 test_sick_person_instantiation()
 test_did_survive_infection()
+
+virus1 = Virus("Dysentery", 0.7, 0.6)
+Alex = Person(1, False, virus1)
+print(f'Alex survived?: {Alex.did_survive_infection()}')
