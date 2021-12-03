@@ -21,6 +21,7 @@ class Person(object):
     
     def did_survive_infection(self):
         chance_infection = random.random()
+        # print(f'Change of Infection {chance_infection}')
         if self.infection:
             if chance_infection < self.infection.mortality_rate:
                 self.is_alive = False
@@ -86,7 +87,7 @@ def test_did_survive_infection():
     assert person.infection is virus
     # Resolve whether the Person survives the infection or not
     survived = person.did_survive_infection()
-    print(f'survived? {survived}')
+    # print(f'survived? {survived}')
     # Check if the Person survived or not
     if survived:
         assert person.is_alive is True
@@ -112,3 +113,27 @@ test_did_survive_infection()
 virus1 = Virus("Dysentery", 0.7, 0.2)
 Alex = Person(1, False, virus1)
 print(f'Alex survived?: {Alex.did_survive_infection()}')
+
+people = []
+for id in range(100):
+    person = Person(id, False, virus1)
+    people.append(person)
+    person.did_survive_infection()
+
+deaths = 0
+survivors = 0
+for person in people:
+    if person.is_alive:
+        survivors += 1
+    else: 
+        deaths += 1
+print(f'There are {survivors} survivors and {deaths} deaths')
+
+virus2 = Virus("Ebola", 0.8, 0.4)
+infected_people=[]
+for id in range(100):
+    person = Person(id, False)
+    if random.uniform(0,1) < virus2.repro_rate:
+        person.infection = virus2
+        infected_people.append(person)
+print(f'Amount of infected people by {virus2.name} are {len(infected_people)}')
