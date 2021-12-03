@@ -109,6 +109,6 @@ test_not_vacc_person_instantiation()
 test_sick_person_instantiation()
 test_did_survive_infection()
 
-virus1 = Virus("Dysentery", 0.7, 0.6)
+virus1 = Virus("Dysentery", 0.7, 0.2)
 Alex = Person(1, False, virus1)
 print(f'Alex survived?: {Alex.did_survive_infection()}')

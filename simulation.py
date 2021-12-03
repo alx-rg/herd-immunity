@@ -6,15 +6,20 @@ from virus import Virus
 
 
 class Simulation(object):
-    ''' Main class that will run the herd immunity simulation program.
-    Expects initialization parameters passed as command line arguments when file is run.
-
-    Simulates the spread of a virus through a given population.  The percentage of the
-    population that are vaccinated, the size of the population, and the amount of initially
-    infected people in a population are all variables that can be set when the program is run.
-    '''
-
     def __init__(self, virus, pop_size, percent_pop_vaccinated, initial_infected=1):
+        self.logger = None
+        self.population = self._create_population() # List of Person objects
+        self.pop_size = int(pop_size) # Int
+        self.next_person_id = 0 # Int
+        self.virus = virus # Virus object
+        self.initial_infected = int(initial_infected) # Int
+        self.total_infected = 0 # Int
+        self.current_infected = 0 # Int
+        self.percent_pop_vaccinated = float(percent_pop_vaccinated) # float between 0 and 1
+        self.total_dead = 0 # Int
+        self.file_name = f"{virus.name}_simulation_pop_{pop_size}_vp_{percent_pop_vaccinated}_infected_{initial_infected}.txt"
+        self.newly_infected = []
+
         ''' Logger object logger records all events during the simulation.
         Population represents all Persons in the population.
         The next_person_id is the next available id for all created Persons,
@@ -32,25 +37,37 @@ class Simulation(object):
         '''
         # TODO: Create a Logger object and bind it to self.logger.
         # Remember to call the appropriate logger method in the corresponding parts of the simulation.
-        # TODO: Call self._create_population() and pass in the correct parameters.
-        # Store the array that this method will return in the self.population attribute.
         # TODO: Store each newly infected person's ID in newly_infected attribute.
         # At the end of each time step, call self._infect_newly_infected()
         # and then reset .newly_infected back to an empty list.
-        self.logger = None
-        self.population = self._create_population() # List of Person objects
-        self.pop_size = int(pop_size) # Int
-        self.next_person_id = 0 # Int
-        self.virus = virus # Virus object
-        self.initial_infected = int(initial_infected) # Int
-        self.total_infected = 0 # Int
-        self.current_infected = 0 # Int
-        self.percent_pop_vaccinated = float(percent_pop_vaccinated) # float between 0 and 1
-        self.total_dead = 0 # Int
-        self.file_name = f"{virus.name}_simulation_pop_{pop_size}_vp_{percent_pop_vaccinated}_infected_{initial_infected}.txt"
-        self.newly_infected = []
+
 
     def _create_population(self):
+        # Create array to contain total population and start simulation
+        population_array = []
+        # Number of people to vaccinate
+        start_vaccinated = self.pop_size * self.percent_pop_vaccinated
+        # Number of Healthy people 
+        start_uninfected = self.pop_size - self.initial_infected - start_vaccinated
+        # Number of Infected people
+        start_infected = self.initial_infected
+        count = 1
+
+        for i in range(0, start_infected):
+            count += 1
+            person = Person(i, False, self.virus)
+            population_array.append(person)
+
+        for i in range(0, start_uninfected):
+            count += 1
+            person = Person(i, False, None)
+            population_array.append(person)
+
+        for i in range(0, start_vaccinated):
+            count += 1
+            person = Person(i, True, None)
+            population_array.append(person)
+
         '''This method will create the initial population.
             Args:
             self.initial_infected
