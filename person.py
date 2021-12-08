@@ -104,36 +104,36 @@ def test_did_survive_infection():
         # the values of each attribute for a Person who did not survive
         # assert ...
         
+if __name__ == "__main__":
+    test_vacc_person_instantiation()
+    test_not_vacc_person_instantiation()
+    test_sick_person_instantiation()
+    test_did_survive_infection()
 
-test_vacc_person_instantiation()
-test_not_vacc_person_instantiation()
-test_sick_person_instantiation()
-test_did_survive_infection()
+    virus1 = Virus("Dysentery", 0.7, 0.2)
+    Alex = Person(1, False, virus1)
+    print(f'Alex survived?: {Alex.did_survive_infection()}')
 
-virus1 = Virus("Dysentery", 0.7, 0.2)
-Alex = Person(1, False, virus1)
-print(f'Alex survived?: {Alex.did_survive_infection()}')
+    people = []
+    for id in range(100):
+        person = Person(id, False, virus1)
+        people.append(person)
+        person.did_survive_infection()
 
-people = []
-for id in range(100):
-    person = Person(id, False, virus1)
-    people.append(person)
-    person.did_survive_infection()
+    deaths = 0
+    survivors = 0
+    for person in people:
+        if person.is_alive:
+            survivors += 1
+        else: 
+            deaths += 1
+    print(f'There are {survivors} survivors and {deaths} deaths')
 
-deaths = 0
-survivors = 0
-for person in people:
-    if person.is_alive:
-        survivors += 1
-    else: 
-        deaths += 1
-print(f'There are {survivors} survivors and {deaths} deaths')
-
-virus2 = Virus("Ebola", 0.8, 0.4)
-infected_people=[]
-for id in range(100):
-    person = Person(id, False)
-    if random.uniform(0,1) < virus2.repro_rate:
-        person.infection = virus2
-        infected_people.append(person)
-print(f'Amount of infected people by {virus2.name} are {len(infected_people)}')
+    virus2 = Virus("Ebola", 0.8, 0.4)
+    infected_people=[]
+    for id in range(100):
+        person = Person(id, False)
+        if random.uniform(0,1) < virus2.repro_rate:
+            person.infection = virus2
+            infected_people.append(person)
+    print(f'Amount of infected people by {virus2.name} are {len(infected_people)}')
