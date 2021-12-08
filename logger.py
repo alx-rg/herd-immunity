@@ -1,5 +1,5 @@
-from virus import Virus
-from simulation import Simulation
+from math import log
+from person import Person
 
 class Logger(object):
     ''' Utility class responsible for logging all interactions during the simulation. '''
@@ -9,11 +9,15 @@ class Logger(object):
     # PROTIP: Write your tests before you solve each function, that way you can
     # test them one by one as you write your class.
 
+#======================================================================================================
     def __init__(self, file_name):
+
         # TODO:  Finish this initialization method. The file_name passed should be the
         # full file name of the file that the logs will be written to.
-        self.file_name = None
+        self.file_name = file_name
 
+#======================================================================================================
+   
     def write_metadata(self, name, repro_rate, mortality_rate, pop_size, percent_pop_vaccinated, initial_infected):
         '''
         The simulation class should use this method immediately to log the specific
@@ -25,13 +29,22 @@ class Logger(object):
         # the 'a' mode to append a new log to the end, since 'w' overwrites the file.
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
+        # log = open(self.file_name, 'w')
         log = open(self.file_name, 'w')
-        journal = open('journal.txt', 'w')
 
-        log.write(f'Starting Population size: {pop_size}\n Percentage Vaccinated: {percent_pop_vaccinated}, Initially Infected: {initial_infected}, Virus Name: {name}, Virus Reproduction Rate: {repro_rate}, Virus Mortality Rate: {mortality_rate}')
-        
-        journal.write(f'Starting Population size: {pop_size}, Percentage Vaccinated: {percent_pop_vaccinated}, Initially Infected: {initial_infected}, Virus Name: {name}, Virus Reproduction Rate: {repro_rate}, Virus Mortality Rate: {mortality_rate}')
+        # log.write(f'log=Starting Population size: {pop_size}\n Percentage Vaccinated: {percent_pop_vaccinated}, Initially Infected: {initial_infected}, Virus Name: {name}, Virus Reproduction Rate: {repro_rate}, Virus Mortality Rate: {mortality_rate}')
+        log.write('=-=-=-=-=-=-=-< Herd Immunity Simulation >-=-=-=-=-=-=-=\n')
+        log.write(f'Starting Population size: {pop_size}\n')
+        log.write(f'Percentage Vaccinated: {percent_pop_vaccinated}\n')
+        log.write(f'Initially Infected: {initial_infected}\n')
+        log.write(f'Virus Name: {name}\n')
+        log.write(f'Virus Reproduction Rate: {repro_rate}\n')
+        log.write(f'Virus Mortality Rate: {mortality_rate}\n')
+        log.write('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
+        log.close()
 
+#======================================================================================================
+  
     def log_interaction(self, person, random_person, random_person_sick=None,
                         random_person_vacc=None, did_infect=None):
         '''
@@ -47,8 +60,21 @@ class Logger(object):
         # represent all the possible edge cases. Use the values passed along with each person,
         # along with whether they are sick or vaccinated when they interact to determine
         # exactly what happened in the interaction and create a String, and write to your logfile.
+        log = open(self.file_name, 'a')
+        log.write(f'\nInfected Person: #{person._id} Exposed Person #{random_person._id}')
 
-
+        if did_infect == True:
+            log.write(f'\nPerson #{person._id} infected person #{random_person._id}')
+        elif random_person_vacc == True:
+            log.write(f'\nPerson #{person._id} did not infect Person #{random_person._id} because they are already vaccinated against the infection.')
+        elif random_person_sick == True:
+            log.write(f'\Person #{person._id} did not infect Person #{random_person._id} since they are already infected')
+        else:
+            log.write(f'\nPerson #{person._id} tried but did not infect person #{random_person._id}')
+        log.close()
+            
+#======================================================================================================
+   
     def log_infection_survival(self, person, did_die_from_infection):
         ''' The Simulation object uses this method to log the results of every
         call of a Person object's .resolve_infection() method.
@@ -56,16 +82,30 @@ class Logger(object):
         The format of the log should be:
             "{person.ID} died from infection\n" or "{person.ID} survived infection.\n"
         '''
+        log = open(self.file_name, 'a')
+        death = (f'Person #{person._id} died from the infection\n')
+        survived = (f'Person #{person._id} survived the infection\n')
+        log.write(death if did_die_from_infection else survived)
+        log.close()
         # TODO: Finish this method. If the person survives, did_die_from_infection
         # should be False.  Otherwise, did_die_from_infection should be True.
         # Append the results of the infection to the logfile
-        pass
-
-    def log_time_step(self, time_step_number):
-
+        
+#======================================================================================================
+    def log_time_step(self, count_time_steps, newly_infected, total_alive, deaths, vaccinated, total_dead):
+        
         log = open(self.file_name, 'a')
-        log.write(f'\nTime step #{time_step_number} ended, beginning time step #{time_step_number + 1}.')
-
+        log.write('=-=-=-=-=-=-=-=-=-=-< Time Step >-=-=-=-=-=-=-=-=-=-=\n')
+        log.write(f'Time step #{count_time_steps} ended, beginning time step #{count_time_steps + 1}.\n')
+        log.write(f'New Infections: {newly_infected}\n')
+        log.write(f'New Deaths: {deaths}\n')
+        log.write(f'Total Alive: {total_alive}\n')
+        log.write(f'Total vaccinated: {vaccinated}\n')
+        log.write(f'Total dead : {total_dead}\n')
+        log.write('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')         
+        log.close()
+#======================================================================================================
+   
     def summary(self, population, total_infected):
         deaths = 0
         for person in population:
@@ -76,11 +116,12 @@ class Logger(object):
         print(f'The total number of infected is {total_infected}')
         print(f'The total number of dead is {deaths}')
 
-        journal = open('journal.txt', 'a')
-        journal.write(f'\nThe percentage of total infected was {total_infected/len(population) * 100}% \nThe percentage of total dead was {deaths/len(population) * 100}%')
+        log = open('log.txt', 'a')
+        log.write(f'\nThe percentage of total infected: {total_infected/len(population) * 100}%')
+        log.write(f'\nThe percentage of total dead: {deaths/len(population) * 100}%')
+        log.close()
 
-        #log.write('Time Step #{time_step_number} ended. Begin Time Step #{time_step_number + 1}')
-
+        
         ''' STRETCH CHALLENGE DETAILS:
 
         If you choose to extend this method, the format of the summary statistics logged
@@ -98,9 +139,23 @@ class Logger(object):
         # TODO: Finish this method. This method should log when a time step ends, and a
         # new one begins.
         # NOTE: Here is an opportunity for a stretch challenge!
-        pass
+        
 
+#======================================================================================================
 
+if __name__ == '__main__':
+    myLogger = Logger('journal.txt')
+    myLogger.write_metadata('Dysentry', 0.70, 0.25, 200, 0.10, 10)
+    myLogger.log_time_step(2)
+    myLogger.log_time_step(3)
+    myLogger.log_time_step(4)
+    # Bella = Person(5, True, None)
+    # myLogger.log_infection_survival(Bella, True)
+    # myLogger.log_infection_survival(Bella, False)
+    # random_person = Person(24, True, False)
+    # myLogger.log_interaction(Bella, random_person, random_person.infection,
+    #                      random_person.is_vaccinated)
+    # myLogger.log_summary(48, 24, 48, 'everyone is vaccinated', 199, 50, 82)
 
 # Header
 # Initial size of the population
