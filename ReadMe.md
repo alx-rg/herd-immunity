@@ -1,7 +1,7 @@
 # Final Project: Herd Immunity Simulation
 
-## Simulation of a Virus going through a population that is un-vaccinated  and vaccinated. 
-## Simulation ends when there are nobody left to infect (either everyone died or everyone is vaccinated)
+### Simulation of a Virus going through a population that is un-vaccinated  and vaccinated. 
+### Simulation ends when there are nobody left to infect (either everyone died or everyone is vaccinated)
 
 
 To Run: 
